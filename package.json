@@ -29,5 +29,10 @@
     "@aws-cdk/aws-apigateway": "^1.87.0",
     "@aws-cdk/aws-events-targets": "^1.87.0",
     "source-map-support": "^0.5.16"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
