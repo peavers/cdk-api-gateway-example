@@ -1,12 +1,12 @@
-import * as cdk from "@aws-cdk/core";
-import * as iam from "@aws-cdk/aws-iam";
-import * as events_targets from "@aws-cdk/aws-events-targets";
+import { AppProps, Construct, Stack } from "@aws-cdk/core";
+import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+import { LambdaFunction } from "@aws-cdk/aws-events-targets";
 import { EventBus, Rule } from "@aws-cdk/aws-events";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { LambdaRestApi } from "@aws-cdk/aws-apigateway";
 
-export class EventBridgeStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.AppProps) {
+export class EventBridgeStack extends Stack {
+  constructor(scope: Construct, id: string, props?: AppProps) {
     super(scope, id, props);
 
     // Producer lambda
@@ -17,8 +17,8 @@ export class EventBridgeStack extends cdk.Stack {
     });
 
     producerLambda.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
+      new PolicyStatement({
+        effect: Effect.ALLOW,
         resources: ["*"],
         actions: ["events:PutEvents"],
       })
@@ -37,14 +37,14 @@ export class EventBridgeStack extends cdk.Stack {
       proxy: false,
     });
 
-    api.root.addResource("produce").addMethod("POST");
+    api.root.addResource("producer").addMethod("POST");
 
     // Eventbus
-    const eventBus = new EventBus(this, "EventBus", {
+    const eventBus = new EventBus(this, "event-bus", {
       eventBusName: `event-bus`,
     });
 
-    const eventRule = new Rule(this, "EventBusRule", {
+    const eventRule = new Rule(this, "event-bus-rule", {
       eventBus: eventBus,
       eventPattern: {
         source: ["custom.producer-lambda"],
@@ -52,6 +52,6 @@ export class EventBridgeStack extends cdk.Stack {
       },
     });
 
-    eventRule.addTarget(new events_targets.LambdaFunction(consumerLambda));
+    eventRule.addTarget(new LambdaFunction(consumerLambda));
   }
 }
