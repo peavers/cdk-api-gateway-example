@@ -8,8 +8,7 @@ A simple CDK typescript template/test project for a basic flow.
 npm i && cdk deploy
 ```
 
-Copy the endpoint url from the result of the above command and make a `POST` request to `https://<YOUR_ENDPOINT>.
-amazonaws.com/prod/produce` with `JSON` content body.
+Copy the endpoint url from the result of the above command and make a `POST` request to `https://<YOUR_ENDPOINT>.amazonaws.com/prod/produce` with `JSON` content body.
 
 Example:
 ```bash
